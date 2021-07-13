@@ -1,51 +1,54 @@
-impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.height
-    }
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+}
 
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
-    }
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
 
-    fn square(size: u32) -> Rectangle {
-        Rectangle {
-            width: size,
-            height: size,
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => {
+            println!("Lucky penny!");
+            1
+        }
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter(state) => {
+            println!("State quarter from {:?}!", state);
+            25
         }
     }
 }
 
-#[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
+fn plus_one(x: Option<i32>) -> Option<i32> {
+    match x {
+        None => None,
+        Some(i) => Some(i + 1),
+    }
 }
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
-    };
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
 
-    let square = Rectangle::square(3);
+    let mut count = 0;
+    let coin = Coin::Penny;
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {:?}!", state);
+    } else {
+        count += 1;
+    }
 
-    println!("This is a square: {:?}", square);
-    
     println!(
-        "The area of the rectangle is {} square pixels",
-        rect1.area()
+        "Testing: {}",
+        value_in_cents(Coin::Quarter(UsState::Alabama))
     );
-
-    println!("rect1 is {:#?}", rect1);
-
-    let rect2 = Rectangle {
-        width: 10,
-        height: 40,
-    };
-    let rect3 = Rectangle {
-        width: 60,
-        height: 45,
-    };
-    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
-    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
+    println!("Other testing: {}", six.unwrap());
 }
