@@ -1,10 +1,11 @@
+use std::collections::HashMap;
+
 fn main() {
-    let v = vec![1, 2, 3, 4, 5];
-    let third = &v[2];
-    println!("The third element is {}", third);
+    let teams = vec![String::from("Blue"), String::from("Yellow")];
+    let initial_scores = vec![10, 50];
+    let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
     
-    match v.get(100) {
-        Some(third) => println!("The third element is {}", third),
-        None => println!("There is no third element."),
+    for elem in scores.into_iter() {
+        println!("key: {}, value: {}", elem.0, elem.1)
     }
 }
