@@ -1,11 +1,15 @@
-use std::collections::HashMap;
+use std::fs::File;
+use std::io::ErrorKind;
 
 fn main() {
-    let teams = vec![String::from("Blue"), String::from("Yellow")];
-    let initial_scores = vec![10, 50];
-    let scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
-    
-    for elem in scores.into_iter() {
-        println!("key: {}, value: {}", elem.0, elem.1)
-    }
+    match File::open("hello.txt") {
+        Ok(file) => file,
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem creating the file: {:?}", e),
+            },
+            other_error => panic!("Problem opening the file: {:?}", other_error)
+        }
+    };
 }
