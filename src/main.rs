@@ -1,18 +1,27 @@
-use std::error::Error;
-use std::fs::File;
-use std::io::{ErrorKind, Read};
-use std::io;
+use std::num::ParseIntError;
 
-fn read_username_from_file() -> Result<String, io::Error> {
-    let mut f = File::open("hello.txt")?;
-    let mut s = String::new();
-    f.read_to_string(&mut s)?;
-    Ok(s)
+fn multiply(first_number_str: &str, second_number_str: &str) -> Result<i32, ParseIntError> {
+    let first_number = match first_number_str.parse::<i32>() {
+        Ok(first_number) => first_number,
+        Err(e) => return Err(e), // This part of the code will return early
+    };
+
+    let second_number = match second_number_str.parse::<i32>() {
+        Ok(second_number) => second_number,
+        Err(e) => return Err(e), // This part of the code will return early
+    };
+
+    Ok(first_number * second_number)
+}
+
+fn print(result: Result<i32, ParseIntError>) {
+    match result {
+        Ok(n) => println!("n is {}", n),
+        Err(e) => println!("Error: {}", e),
+    }
 }
 
 fn main() {
-    match read_username_from_file() {
-        Err(e) => println!("{}", e),
-        Ok(s) => println!("{}", s)
-    };
+    print(multiply("10", "2"));
+    print(multiply("t", "2"));
 }
