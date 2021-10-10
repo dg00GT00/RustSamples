@@ -1,17 +1,16 @@
-fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
-    if x.len() > y.len() {
-        x
-    } else {
-        y
+struct ImportantExcept<'a> {
+    par: &'a str,
+}
+
+impl<'a> ImportantExcept<'a> {
+    fn announce_and_return_par(&self, announcement: &str) -> &str {
+        println!("Attention please: {}", announcement);
+        self.par
     }
 }
 
 fn main() {
-    let string1 = String::from("abcd");
-    let result;
-    {
-        let string2 = String::from("xyz");
-        result = longest(string1.as_str(), string2.as_str());
-    }
-    println!("The longest string is {}", result);
+    let t = ImportantExcept { par: "Something else" };
+    let par = t.announce_and_return_par("Ora bolas");
+    println!("{}", par);
 }
