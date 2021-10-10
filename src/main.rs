@@ -1,4 +1,4 @@
-use hello_cargo::{NewsArticle, Summary, Tweet};
+use hello_cargo::{NewsArticle, notify, Summary, Tweet};
 
 fn main() {
     let tweet = Tweet {
