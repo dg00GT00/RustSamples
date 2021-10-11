@@ -1,6 +1,6 @@
 use std::{env, process};
 
-use parser::run::{Config, run};
+use parser::{Config, run};
 
 mod parser;
 
