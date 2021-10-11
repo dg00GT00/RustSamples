@@ -1,6 +1,8 @@
 use std::{env, process};
 
-use hello_cargo::run::*;
+use parser::run::{Config, run};
+
+mod parser;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
