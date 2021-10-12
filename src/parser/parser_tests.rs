@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod tests {
+    use crate::parser::*;
+
     #[test]
     fn one_result() {
         let query = "duct";
