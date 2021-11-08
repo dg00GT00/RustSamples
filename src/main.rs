@@ -1,21 +1,24 @@
-use std::{env, process};
+use std::ops::Deref;
 
-use parser::{Config, run};
+struct MyBox<T>(T);
 
-mod parser;
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
+        Self(x)
+    }
+}
+
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.0
+    }
+}
 
 fn main() {
-    let config = Config::new(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
-
-    println!("Searching for {}", config.query);
-    println!("In file {}\n", config.filename);
-
-    if let Err(e) = run(config) {
-        eprintln!("Application error: {}", e);
-
-        process::exit(1);
-    }
+    let x = 5;
+    let y = MyBox::new(x);
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
 }
