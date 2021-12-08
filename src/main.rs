@@ -1,13 +1,27 @@
-struct Point {
-    x: u16,
-    y: u16
+enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
 }
 
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
 fn main() {
-    let p = Point { x: 0, y: 7 };
-    match p {
-        Point { x, y: 0 } => println!("On the x axis at {}", x),
-        Point { x: 0, y } => println!("On the y axis at {}", y),
-        Point { x, y } => println!("On neither axis: ({}, {})", x, y),
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) => {
+            println!("Change the color to red {}, green {} and blue {}", r, g, b)
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) => {
+            println!(
+                "Change the color to hue {}, saturation {} and value {}",
+                h, s, v
+            )
+        }
+        _ => (),
     }
 }
