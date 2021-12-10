@@ -1,13 +1,21 @@
-fn main() {
-    let mut setting_value = Some(5);
-    let new_setting_value = Some(10);
+enum Message {
+    Hello { id: i32 },
+}
 
-    match (setting_value, new_setting_value) {
-        (Some(_), Some(_)) => {
-            println!("Can't overwrite an existing customized value");
-        }
-        _ => {
-            setting_value = new_setting_value
+fn main() {
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello {
+            id: id_variable @ 3..=7,
+        } => {
+            println!("Found an id in range: {}", id_variable)
+        },
+        Message::Hello {id: 10..=12} => {
+            println!("Found an id in another range")
+        },
+        Message::Hello {id} => {
+            println!("Found some other id: {}", id)
         }
     }
 }
