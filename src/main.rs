@@ -1,27 +1,13 @@
-enum Color {
-    Rgb(i32, i32, i32),
-    Hsv(i32, i32, i32),
-}
-
-enum Message {
-    Quit,
-    Move { x: i32, y: i32 },
-    Write(String),
-    ChangeColor(Color),
-}
 fn main() {
-    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
 
-    match msg {
-        Message::ChangeColor(Color::Rgb(r, g, b)) => {
-            println!("Change the color to red {}, green {} and blue {}", r, g, b)
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) => {
+            println!("Can't overwrite an existing customized value");
         }
-        Message::ChangeColor(Color::Hsv(h, s, v)) => {
-            println!(
-                "Change the color to hue {}, saturation {} and value {}",
-                h, s, v
-            )
+        _ => {
+            setting_value = new_setting_value
         }
-        _ => (),
     }
 }
