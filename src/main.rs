@@ -1,21 +1,17 @@
-enum Message {
-    Hello { id: i32 },
+use std::slice;
+
+fn split_at_mut(slice: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
+    let len = slice.len();
+    let ptr = slice.as_mut_ptr();
+
+    assert!(mid <= len);
+
+    unsafe {
+        (slice::from_raw_parts_mut(ptr, mid),
+         slice::from_raw_parts_mut(ptr.offset(mid as isize), len - mid))
+    }
 }
 
 fn main() {
-    let msg = Message::Hello { id: 5 };
 
-    match msg {
-        Message::Hello {
-            id: id_variable @ 3..=7,
-        } => {
-            println!("Found an id in range: {}", id_variable)
-        },
-        Message::Hello {id: 10..=12} => {
-            println!("Found an id in another range")
-        },
-        Message::Hello {id} => {
-            println!("Found some other id: {}", id)
-        }
-    }
 }
