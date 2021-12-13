@@ -1,21 +1,31 @@
-trait Animal {
-    fn baby_name() -> String;
+use std::fmt::{Display, Formatter};
+
+struct Point {
+    x: i32,
+    y: i32,
 }
 
-struct Dog;
-
-impl Dog {
-    fn baby_name() -> String {
-        String::from("Spot")
+trait OutlinePrint: Display {
+    fn outline_print(&self) {
+        let output = self.to_string();
+        let len = output.len();
+        println!("{}", "*".repeat(len + 4));
+        println!("*{}*", " ".repeat(len + 2));
+        println!("* {} *", output);
+        println!("*{}*", " ".repeat(len + 2));
+        println!("{}", "*".repeat(len + 4));
     }
 }
 
-impl Animal for Dog {
-    fn baby_name() -> String {
-        String::from("puppy")
+impl Display for Point {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({},{})", self.x, self.y)
     }
 }
+
+impl OutlinePrint for Point {}
 
 fn main() {
-    println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
+    let p = Point { x: 2, y: 4 };
+    p.outline_print();
 }
