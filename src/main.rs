@@ -1,14 +1,12 @@
-use std::fmt::{Display, Formatter};
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
 
-struct Wrapper(Vec<String>);
-
-impl Display for Wrapper {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[{}]", self.0.join(", "))
-    }
+fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
+    f(arg) + f(arg)
 }
 
 fn main() {
-    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
-    println!("w = {}", w);
+    let answer = do_twice(add_one, 5);
+    println!("The answer is: {}", answer);
 }
