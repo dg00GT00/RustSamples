@@ -14,11 +14,11 @@ fn main() {
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 512];
+    let mut buffer = [0; 1024];
     stream.read(&mut buffer).unwrap();
     let contents = fs::read_to_string("hello.html").unwrap();
     let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
 
-    stream.write(response.as_bytes()).unwrap();
+    stream.write_all(response.as_bytes()).unwrap();
     stream.flush().unwrap();
 }
