@@ -2,9 +2,14 @@ use std::sync::{Arc, mpsc, Mutex};
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 
+enum Message {
+    NewJob(Job),
+    Terminate,
+}
+
 struct Worker {
     id: usize,
-    thread: thread::JoinHandle<()>,
+    thread: Option<thread::JoinHandle<()>>,
 }
 
 trait FnBox {
@@ -18,15 +23,24 @@ impl<F: FnOnce()> FnBox for F {
 }
 
 impl Worker {
-    pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Self {
+    pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) -> Self {
         let thread = thread::spawn(move || {
             loop {
-                let job = receiver.lock().unwrap().recv().unwrap();
-                println!("Worker {} got a job; executing.", id);
-                job.call_box();
+                let message = receiver.lock().unwrap().recv().unwrap();
+
+                match message {
+                    Message::NewJob(job) => {
+                        println!("Worker {} got the job; executing.", id);
+                        job.call_box();
+                    }
+                    Message::Terminate => {
+                        println!("Worker {} was told to terminate.", id);
+                        break;
+                    }
+                }
             }
         });
-        Worker { id, thread }
+        Worker { id, thread: Some(thread) }
     }
 }
 
@@ -34,7 +48,7 @@ type Job = Box<dyn FnBox + Send + 'static>;
 
 pub struct ThreadPool {
     workers: Vec<Worker>,
-    sender: mpsc::Sender<Job>,
+    sender: mpsc::Sender<Message>,
 }
 
 impl ThreadPool {
@@ -62,6 +76,18 @@ impl ThreadPool {
 
     pub fn execute<F>(&self, f: F) where F: FnOnce() + Send + 'static {
         let job = Box::new(f);
-        self.sender.send(job).unwrap();
+        self.sender.send(Message::NewJob(job)).unwrap();
+    }
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        for worker in &mut self.workers {
+            println!("Shutting down worker {}", worker.id);
+
+            if let Some(thread) = worker.thread.take() {
+                thread.join().unwrap();
+            }
+        }
     }
 }
